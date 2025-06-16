@@ -8,7 +8,7 @@ const cors = require('cors');
 const { Server } = require('socket.io');
 const User = require('./models/User');
 const Message = require('./models/Message'); // ✅ Add this
-
+const messageRoutes = require('./routes/messages');
 const authRoutes = require('./routes/auth');
 const app = express();
 
@@ -17,7 +17,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/api', authRoutes);
-app.use('/api', require('./routes/messages')); // add this line
+app.use('/api', messageRoutes); // ✅ this line must exist
 
 // Basic test route
 app.get('/', (req, res) => {
@@ -45,28 +45,52 @@ io.on('connection', (socket) => {
     socket.on('register', (userId) => {
       onlineUsers.set(userId, socket.id);
       console.log(`User ${userId} is now online.`);
+      io.emit('online_users', Array.from(onlineUsers.keys()));
     });
+    
   
     // 2. Handle sending a message
     socket.on('private_message', async ({ senderId, recipientId, text }) => {
-      // Save to DB
       const message = new Message({
         sender: senderId,
         recipient: recipientId,
         text
       });
-  
+    
       await message.save();
-  
-      // Send to recipient if online
+    
       const recipientSocketId = onlineUsers.get(recipientId);
+      const senderSocketId = onlineUsers.get(senderId);
+    
+      console.log('Recipient socket:', recipientSocketId);
+      console.log('Sender socket:', senderSocketId);
+    
       if (recipientSocketId) {
         io.to(recipientSocketId).emit('new_message', {
           _id: message._id,
           senderId,
+          recipientId,
           text,
           timestamp: message.timestamp
         });
+      }
+    
+      if (senderSocketId) {
+        io.to(senderSocketId).emit('new_message', {
+          _id: message._id,
+          senderId,
+          recipientId,
+          text,
+          timestamp: message.timestamp
+        });
+      }
+    });
+    
+    // Handle typing indicator
+    socket.on('typing', ({ from, to }) => {
+      const recipientSocketId = onlineUsers.get(to);
+      if (recipientSocketId) {
+        io.to(recipientSocketId).emit('typing', { from });
       }
     });
   
@@ -76,6 +100,8 @@ io.on('connection', (socket) => {
         if (socketId === socket.id) {
           onlineUsers.delete(userId);
           console.log(`User ${userId} disconnected.`);
+          // Update online users
+          io.emit('online_users', Array.from(onlineUsers.keys()));
           break;
         }
       }
