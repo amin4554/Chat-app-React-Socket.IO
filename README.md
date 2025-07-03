@@ -12,6 +12,14 @@ A full-stack real-time chat application built with **React**, **Socket.IO**, **E
 
 ---
 
+## Screenshots:
+
+![Screenshot 2025-07-03 222324](https://github.com/user-attachments/assets/a8c26cdd-9d06-46b4-9825-748e837074a3)
+
+![Screenshot 2025-07-03 222505](https://github.com/user-attachments/assets/2ee751d4-489d-4854-bb81-f16a85e5eed7)
+
+![Screenshot 2025-07-03 222710](https://github.com/user-attachments/assets/da689537-20d6-4273-96ce-8b5428450eec)
+
 ## 🚀 Tech Stack
 
 **Frontend**
