@@ -16,9 +16,21 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
-  }
+  },
+  friends: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    }
+  ],
+  friendRequests: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    }
+  ]
 }, {
-  timestamps: true // auto adds createdAt and updatedAt
+  timestamps: true
 });
 
 module.exports = mongoose.model('User', userSchema);

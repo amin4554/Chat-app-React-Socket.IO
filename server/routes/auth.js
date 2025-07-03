@@ -84,3 +84,21 @@ router.get('/users', async (req, res) => {
     res.status(500).json({ message: 'Error fetching users' });
   }
 });
+// GET /api/users/:id
+router.get('/users/:id', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id)
+      .populate('friends', 'username')             // populate friends' usernames
+      .populate('friendRequests', 'username');     // populate friendRequests' usernames
+
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    res.json({
+      friends: user.friends,
+      friendRequests: user.friendRequests
+    });
+  } catch (err) {
+    console.error('Error loading user connections:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});

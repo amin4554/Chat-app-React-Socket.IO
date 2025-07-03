@@ -8,40 +8,46 @@ function App() {
   const [user, setUser] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
 
+  // Extract primitive for safer dependency handling
+  const userId = user?.id;
+
   useEffect(() => {
     console.log('Connecting socket...');
     socket.connect();
 
-    socket.on('connect', () => {
+    const handleConnect = () => {
       console.log('✅ Connected to Socket.IO as:', socket.id);
-      if (user?.id) {
-        socket.emit('register', user.id);
-        console.log('📌 Re-registering user on connect:', user.id);
+      if (userId) {
+        socket.emit('register', userId);
+        console.log('📌 Re-registering user on connect:', userId);
       }
-    });
+    };
 
-    socket.on('connect_error', (err) => {
+    const handleError = (err) => {
       console.error('❌ Socket connection error:', err);
-    });
+    };
+
+    socket.on('connect', handleConnect);
+    socket.on('connect_error', handleError);
 
     return () => {
       console.log('Disconnecting socket...');
-      socket.off('connect');
-      socket.off('connect_error');
+      socket.off('connect', handleConnect);
+      socket.off('connect_error', handleError);
       socket.disconnect();
     };
-  }, []);
+  }, [userId]); // ✅ clean dependency array
 
+  // Emit register on user change, if already connected
   useEffect(() => {
-    if (user?.id && socket.connected) {
-      socket.emit('register', user.id);
-      console.log('✅ User registered to socket:', user.id);
+    if (userId && socket.connected) {
+      socket.emit('register', userId);
+      console.log('✅ User registered to socket:', userId);
     }
-  }, [user]);
+  }, [userId]);
 
   return (
     <div>
-      <h1 style={{ textAlign: 'center' }}>Socket.IO Chat App</h1>
       {!user ? (
         <div style={{ textAlign: 'center' }}>
           {showSignup ? (
@@ -63,10 +69,7 @@ function App() {
           )}
         </div>
       ) : (
-        <>
-          <p style={{ textAlign: 'center' }}>Welcome, {user.username}!</p>
-          <ChatWindow user={user} />
-        </>
+        <ChatWindow user={user} />
       )}
     </div>
   );

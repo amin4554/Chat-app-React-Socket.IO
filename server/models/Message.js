@@ -18,7 +18,15 @@ const messageSchema = new mongoose.Schema({
   timestamp: {
     type: Date,
     default: Date.now
-  }
+  },
+  delivered: {
+    type: Boolean,
+    default: false
+  },
+  read: {
+    type: Boolean,
+    default: false 
+  }       
 });
 
 module.exports = mongoose.model('Message', messageSchema);
