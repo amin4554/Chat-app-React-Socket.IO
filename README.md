@@ -33,6 +33,7 @@ A full-stack real-time chat application built with **React**, **Socket.IO**, **E
 - **Typing Indicators:** Shows when a user is typing in real-time  
 - **Grouped Messages:** Chat messages are grouped by "Today", "Yesterday", or full date  
 - **Modern UI:** WhatsApp-style, mobile-responsive design
+- **Signup/Login :**
 
 ---
 
