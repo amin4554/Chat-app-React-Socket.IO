@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import socket from './socket';
 import LoginForm from './components/LoginForm';
+import SignupForm from './components/SignupForm';
 import ChatWindow from './components/ChatWindow';
 
 function App() {
   const [user, setUser] = useState(null);
+  const [showSignup, setShowSignup] = useState(false);
 
   useEffect(() => {
     console.log('Connecting socket...');
-    socket.connect(); // Only once, on mount
+    socket.connect();
 
     socket.on('connect', () => {
       console.log('✅ Connected to Socket.IO as:', socket.id);
-
-      // If user already logged in when socket connects, register them
       if (user?.id) {
         socket.emit('register', user.id);
         console.log('📌 Re-registering user on connect:', user.id);
@@ -32,7 +32,6 @@ function App() {
     };
   }, []);
 
-  // When user logs in, register them to the socket
   useEffect(() => {
     if (user?.id && socket.connected) {
       socket.emit('register', user.id);
@@ -42,12 +41,30 @@ function App() {
 
   return (
     <div>
-      <h1>Socket.IO Chat App</h1>
+      <h1 style={{ textAlign: 'center' }}>Socket.IO Chat App</h1>
       {!user ? (
-        <LoginForm onLogin={(loggedInUser) => setUser(loggedInUser)} />
+        <div style={{ textAlign: 'center' }}>
+          {showSignup ? (
+            <>
+              <SignupForm onSignupSuccess={() => setShowSignup(false)} />
+              <p>
+                Already have an account?{' '}
+                <button onClick={() => setShowSignup(false)}>Log In</button>
+              </p>
+            </>
+          ) : (
+            <>
+              <LoginForm onLogin={(loggedInUser) => setUser(loggedInUser)} />
+              <p>
+                Don't have an account?{' '}
+                <button onClick={() => setShowSignup(true)}>Sign Up</button>
+              </p>
+            </>
+          )}
+        </div>
       ) : (
         <>
-          <p>Welcome, {user.username}!</p>
+          <p style={{ textAlign: 'center' }}>Welcome, {user.username}!</p>
           <ChatWindow user={user} />
         </>
       )}
