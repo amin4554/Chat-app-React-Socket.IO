@@ -3,11 +3,11 @@
 A full-stack real-time chat application built with **React**, **Socket.IO**, **Express.js**, and **MongoDB**. Features include:
 
 - ✅ Real-time private messaging  
-- ✅ Message delivery and read receipts (✓, ✓✓, ✓✓ blue)  
-- ✅ Friend request system (accept/decline)  
+- ✅ Message delivery and read receipts  
+- ✅ Friend request system 
 - ✅ Typing indicators  
 - ✅ Responsive modern UI  
-- ✅ Grouped messages by date (Today / Yesterday / Date)
+- ✅ Grouped messages by date
 
 ---
 
@@ -27,11 +27,7 @@ A full-stack real-time chat application built with **React**, **Socket.IO**, **E
 
 ## 🧠 Features
 
-- **Real-time Communication:** Powered by WebSockets via Socket.IO  
-- **Message Ticks:**  
-  - `✓` Sent  
-  - `✓✓` Delivered  
-  - `✓✓` (blue) Read  
+- **Real-time Communication:** Powered by WebSockets via Socket.IO   
 - **Friend Requests:** With live updates and automatic chat start after acceptance  
 - **Typing Indicators:** Shows when a user is typing in real-time  
 - **Grouped Messages:** Chat messages are grouped by "Today", "Yesterday", or full date  
