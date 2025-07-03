@@ -8,6 +8,7 @@ A full-stack real-time chat application built with **React**, **Socket.IO**, **E
 - ✅ Typing indicators  
 - ✅ Responsive modern UI  
 - ✅ Grouped messages by date
+- ✅ User login and signup
 
 ---
 
